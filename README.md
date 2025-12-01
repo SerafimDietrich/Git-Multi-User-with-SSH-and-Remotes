@@ -167,22 +167,6 @@ To avoid re-entering a passphrase every time, add your private key to an agent f
 ssh-add ~/.ssh/id_ed25519_work
 ```
 
-## Usage
-
-In a repository, to switch to an identity (Unix shell example):
-
-```bash
-git identity work
-```
-
-Or in PowerShell after adding the helper function:
-
-```powershell
-Set-GitIdentity work
-```
-
-This copies the named subsection (`user.work.*`) into the local repo's `user.name` / `user.email` / `user.signingkey` values.
-
 ## References
 
 - Micah Henning - [Setting Up Git Identities](https://www.micah.soy/posts/setting-up-git-identities/)
