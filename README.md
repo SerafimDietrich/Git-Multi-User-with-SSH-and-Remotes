@@ -79,7 +79,7 @@ Follow the prompts and choose a passphrase you can remember (recommended). If yo
 > [!important]
 > Keep the private key (`path/to/key`) secret. The public key (`path/to/key.pub`) may be shared with anyone.
 
-### Configure an identity
+### Configuring an identity
 
 Create an identity with name, email and signing key:
 
@@ -152,6 +152,103 @@ To avoid re-entering a passphrase every time, add your private key to an agent f
 ```bash
 ssh-add <path/to/key>
 ```
+
+## Example
+
+In this example, two identities will be created:
+
+- Mike's business identity:
+  - identifier: `business`
+  - name: `Mike`
+  - email: `mike@business.com`
+  - private key at `~/.ssh/id_25519_business`
+  - public key at `~/.ssh/id_25519_business.pub`
+  - connection `github-business` to GitHub
+- Mike's personal identity:
+  - identifier: `personal`
+  - name: `Mike`
+  - email: `mike@personal.dev`
+  - private key at `~/.ssh/id_25519_personal`
+  - public key at `~/.ssh/id_25519_personal.pub`
+  - connection `github-personal` to GitHub
+  - connection `gitlab-personal` to GitLab
+
+### Generating SSH key pairs
+
+Run the following:
+
+```bash
+ssh-keygen -t ed25519 -C mike@business.com -f ~/.ssh/id_25519_business
+ssh-keygen -t ed25519 -C mike@personal.dev -f ~/.ssh/id_25519_personal
+```
+
+### Configuring identities
+
+Run the following:
+
+```bash
+git config --global user.business.name "Mike"
+git config --global user.business.email "mike@business.com"
+git config --global user.business.signingkey "~/.ssh/id_25519_business.pub"
+git config --global user.personal.name "Mike"
+git config --global user.personal.email "mike@personal.dev"
+git config --global user.personal.signingkey "~/.ssh/id_25519_personal.pub"
+```
+
+### Connecting to hosting services
+
+Add the following to your SSH config file:
+
+```sshconfig
+Host github-business
+	HostName github.com
+	PreferredAuthentications publickey
+	IdentityFile ~/.ssh/id_25519_business
+Host github-personal
+	HostName github.com
+	PreferredAuthentications publickey
+	IdentityFile ~/.ssh/id_25519_personal
+Host gitlab-personal
+	HostName gitlab.com
+	PreferredAuthentications publickey
+	IdentityFile ~/.ssh/id_25519_personal
+```
+
+In the business **GitHub** account:
+
+1. **Settings → Access → SSH and GPG keys** and add a new SSH key:
+
+   - **Title**: Mike's PC
+   - **Key Type**: Authentication Key
+   - **Key**: Content of ~/.ssh/id_25519_business.pub
+
+2. Add another SSH key:
+
+   - **Title**: Mike's PC
+   - **Key Type**: Signing Key
+   - **Key**: Content of ~/.ssh/id_25519_business.pub
+
+In the personal **GitHub** account:
+
+1. **Settings → Access → SSH and GPG keys** and add a new SSH key:
+
+   - **Title**: Mike's PC
+   - **Key Type**: Authentication Key
+   - **Key**: Content of ~/.ssh/id_25519_personal.pub
+
+2. Add another SSH key:
+
+   - **Title**: Mike's PC
+   - **Key Type**: Signing Key
+   - **Key**: Content of ~/.ssh/id_25519_personal.pub
+
+In the personal **GitLab** account:
+
+1. **Edit profile → SSH Keys** and add a new SSH key:
+
+   - **Title**: Mike's PC
+   - **Usage type**: Authentication & Signing
+   - **Key**: Content of ~/.ssh/id_25519_personal.pub
 
 ## References
 
